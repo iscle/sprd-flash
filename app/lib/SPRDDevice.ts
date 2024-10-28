@@ -39,8 +39,6 @@ export default class SPRDDevice {
 	async open(): Promise<boolean> {
         let device: USBDevice
         
-        console.log('Opening Spreadtrum / Unisoc device')
-
         try {
             device = await navigator.usb.requestDevice({ filters: [{
                 vendorId: 0x1782,
@@ -56,8 +54,6 @@ export default class SPRDDevice {
             return false
         }
 
-        console.log('Device:', device)
-
         if (!this.findConfigAndIface(device)) {
             console.error('No suitable configuration/interface found')
             return false
@@ -70,8 +66,6 @@ export default class SPRDDevice {
             return false
         }
 
-        console.log('Device opened successfully')
-
         try {
             await device.selectConfiguration(this.config)
         } catch (error) {
@@ -79,8 +73,6 @@ export default class SPRDDevice {
             await device.close()
             return false
         }
-
-        console.log('Configuration selected')
 
         try {
             await device.claimInterface(this.iface)
@@ -90,8 +82,6 @@ export default class SPRDDevice {
             return false
         }
 
-        console.log('Interface claimed')
-
         try {
             await device.selectAlternateInterface(this.iface, this.alt)
         } catch (error) {
@@ -100,20 +90,24 @@ export default class SPRDDevice {
             return false
         }
 
-        console.log('Alternate interface selected')
-
         this.device = device
 
         return true
     }
 
-    async sendHello(): Promise<boolean> {
+    async sendHello(): Promise<string> {
         const data = new Uint8Array([SPRDDevice.HDLC_FLAG])
-        return await this.transferOut(data)
+        await this.transferOut(data)
+        const response = await this.receivePacket()
+        if (response.type !== HDLC_TYPE.REP_VER) throw Error()
+        if (response.data === undefined) throw Error()
+        return new TextDecoder('utf-8').decode(response.data.slice(0, response.data.byteLength - 1))
     }
 
     async sendConnect(): Promise<boolean> {
-        return await this.sendPacket(new Packet(HDLC_TYPE.CMD_CONNECT))
+        if (!await this.sendPacket(new Packet(HDLC_TYPE.CMD_CONNECT))) throw Error()
+        await this.receiveAck()
+        return true
     }
 
     async sendStartData(address: number, length: number): Promise<boolean> {
@@ -124,15 +118,26 @@ export default class SPRDDevice {
         view.setUint32(0, address)
         view.setUint32(4, length)
 
-        return await this.sendPacket(new Packet(HDLC_TYPE.CMD_START_DATA, array))
+        if (!await this.sendPacket(new Packet(HDLC_TYPE.CMD_START_DATA, array))) throw Error()
+        await this.receiveAck()
+        return true
     }
 
     async sendMidstData(data: Uint8Array): Promise<boolean> {
-        return await this.sendPacket(new Packet(HDLC_TYPE.CMD_MIDST_DATA, data))
+        if (!await this.sendPacket(new Packet(HDLC_TYPE.CMD_MIDST_DATA, data))) throw Error()
+        await this.receiveAck()
+        return true
     }
 
     async sendEndData(): Promise<boolean> {
-        return await this.sendPacket(new Packet(HDLC_TYPE.CMD_END_DATA))
+        if (!await this.sendPacket(new Packet(HDLC_TYPE.CMD_END_DATA))) throw Error()
+        await this.receiveAck()
+        return true
+    }
+
+    private async receiveAck() {
+        const response = await this.receivePacket()
+        if (response.type !== HDLC_TYPE.REP_ACK) throw Error()
     }
 
     /*
@@ -219,7 +224,7 @@ export default class SPRDDevice {
 
     private async sendPacket(packet: Packet): Promise<boolean> {
         const dataLength = packet.data ? packet.data.byteLength : 0
-        /* Double the length to account for escaped packets */
+        /* Double the length to account for escaped bytes */
         const buffer = new ArrayBuffer(SPRDDevice.HDLC_FRAME_MIN_SIZE + dataLength * 2)
         const view = new DataView(buffer)
         const array = new Uint8Array(buffer)
@@ -248,7 +253,9 @@ export default class SPRDDevice {
         }
         array[j++] = array[i++] /* HDLC_FLAG */
 
-        return await this.transferOut(buffer.slice(0, j))
+        await this.transferOut(buffer.slice(0, j))
+
+        return true
     }
 
     private bromCrc(array: Uint8Array, offset: number, length: number): number {
@@ -303,21 +310,12 @@ export default class SPRDDevice {
         }
     }
 
-    private async transferOut(data: BufferSource): Promise<boolean> {
+    private async transferOut(data: BufferSource) {
         if (!this.device) {
-            console.error('Device not open')
-            return false
+            throw Error('Device not open')
         }
 
-        let result: USBOutTransferResult
-
-        try {
-            result = await this.device.transferOut(this.epOut, data)
-        } catch (error) {
-            console.error('Error sending data:', error)
-            return false
-        }
-        
+        const result = await this.device.transferOut(this.epOut, data)    
         return result.status === 'ok' && result.bytesWritten === data.byteLength
     }
 

@@ -7,25 +7,21 @@ export default function Home() {
     <button onClick={
       async () => {
         const sprd = new SPRDDevice();
-        let success: boolean
-        let packet: Packet
         
-        success = await sprd.open();
-        if (!success) {
+        if (!await sprd.open()) {
           console.error('Error opening device')
           return
         }
 
-        success = await sprd.sendHello();
-        if (!success) {
-          console.error('Error sending hello')
+        const helloResponse = await sprd.sendHello();
+        console.debug('Hello response:', helloResponse)
+        if (helloResponse !== 'SPRD3') {
+          console.error('Received unknown response from bootrom')
           return
         }
 
-        packet = await sprd.receivePacket()
-        console.debug('hello response:', packet.type.toString(16), packet.data)
-
         console.log('Device ready!')
+
 
 
       }
