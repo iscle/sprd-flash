@@ -13,6 +13,10 @@ export default function Home() {
     }
   }
 
+  function delay(ms: number) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   const handleButtonClick = async () => {
     if (!selectedFile) {
       alert('Please select a file first')
@@ -58,9 +62,11 @@ export default function Home() {
 
     console.log(`Sending payload to ${loadAddr.toString(16)}... (${fileData.length} bytes)`);
 
-    await sprd.sendPayload(0x5500, fileData);
+    await sprd.sendPayload(loadAddr, fileData);
     console.log('Payload sent!');
-    await sprd.sendJumpToPayload(loadAddr + 0x200, stackLr, true);
+    await sprd.sendJumpToPayload(stackLr, loadAddr + 0x200, true);
+
+    await delay(1000)
 
     console.log('fdl1 hello:', await sprd.sendHello());
   }
