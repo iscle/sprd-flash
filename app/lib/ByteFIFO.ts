@@ -1,6 +1,6 @@
 export default class ByteFIFO {
-    buffer: Uint8Array;
-    tail = 0; // Points to the end of data
+    private buffer: Uint8Array;
+    private tail = 0; // Points to the end of data
     readonly length: number;
   
     constructor(maxLength: number) {
