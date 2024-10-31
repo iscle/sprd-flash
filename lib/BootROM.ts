@@ -1,5 +1,5 @@
 import ByteFIFO from "./ByteFiFO"
-import SPRDDevice from "./SPRDDevice"
+import SPRDDevice, { SPRDFamily } from "./SPRDDevice"
 
 const HDLC_FLAG = 0x7e
 const HDLC_ESCAPE = 0x7d
@@ -85,8 +85,20 @@ export default class BootROM {
     /*
      * Jumps to the specified address by overwritting a specific lr value in the stack.
      */
-    async sendJumpToPayload(stackLr: number, address: number, is64bit: boolean) {
-        await this.sendStartData(stackLr, 8)
+    async sendJumpToPayload(address: number) {
+        let stackLrAddr: number
+        let is64bit: boolean
+
+        switch (this.device.family) {
+            case SPRDFamily.SHARKL5PRO:
+                stackLrAddr = 0x3f58
+                is64bit = true
+                break
+            default:
+                throw Error('Unsupported family')
+        }
+
+        await this.sendStartData(stackLrAddr, 8)
 
         const buffer = new ArrayBuffer(is64bit ? 8 : 4)
         const view = new DataView(buffer)

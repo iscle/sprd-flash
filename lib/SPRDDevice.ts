@@ -1,10 +1,27 @@
+export enum SPRDFamily {
+    IWHALE2,
+    ISHARKL2,
+    SHARKLJ1,
+    SHARKLE,
+    PIKE2,
+    SHARKL3,
+    SHARKL5,
+    SHARKL5PRO,
+    ROC1,
+}
+
 export default class SPRDDevice {
+    readonly family: SPRDFamily
     private device?: USBDevice
     private config = -1
     private iface = -1
     private alt = -1
     private epIn = -1
     private epOut = -1
+
+    constructor(family: SPRDFamily) {
+        this.family = family
+    }
 
 	async open() {
         const device = await navigator.usb.requestDevice({ filters: [{

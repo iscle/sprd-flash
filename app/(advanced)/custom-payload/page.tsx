@@ -2,7 +2,7 @@
 
 import BootROM from "@/lib/BootROM";
 import { ChangeEvent, useState } from "react";
-import SPRDDevice from "@/lib/SPRDDevice";
+import SPRDDevice, { SPRDFamily } from "@/lib/SPRDDevice";
 import { Button, Input } from "@mui/material";
 import Box from '@mui/material/Box';
 import FormLabel from '@mui/material/FormLabel';
@@ -73,7 +73,7 @@ export default function CustomPayload() {
       return
     }
 
-    const sprd = new SPRDDevice();
+    const sprd = new SPRDDevice(SPRDFamily.SHARKL5PRO);
     await sprd.open()
 
     const bootRom = new BootROM(sprd);
@@ -87,7 +87,6 @@ export default function CustomPayload() {
 
     console.log('Device ready!')
 
-    const stackLr = 0x3f58
     const loadAddr = 0x5500
 
     const readFileAsUint8Array = (file: File): Promise<Uint8Array> => {
@@ -115,7 +114,7 @@ export default function CustomPayload() {
 
     await bootRom.sendPayload(loadAddr, fileData);
     console.log('Payload sent!');
-    await bootRom.sendJumpToPayload(stackLr, loadAddr + 0x200, true);
+    await bootRom.sendJumpToPayload(loadAddr + 0x200);
 
     await delay(1000)
 
