@@ -2,6 +2,7 @@
 
 import { ChangeEvent, MouseEventHandler, useState } from "react";
 import SPRDDevice, { Packet } from "./lib/SPRDDevice";
+import BootROM from "./lib/BootROM";
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
@@ -24,10 +25,11 @@ export default function Home() {
     }
 
     const sprd = new SPRDDevice();
-        
     await sprd.open()
 
-    const helloResponse = await sprd.sendHello();
+    const bootRom = new BootROM(sprd);
+
+    const helloResponse = await bootRom.sendHello();
     console.log('Hello response:', helloResponse)
     if (helloResponse !== 'SPRD3') {
       console.error('Received unknown response from bootrom')
@@ -62,13 +64,13 @@ export default function Home() {
 
     console.log(`Sending payload to ${loadAddr.toString(16)}... (${fileData.length} bytes)`);
 
-    await sprd.sendPayload(loadAddr, fileData);
+    await bootRom.sendPayload(loadAddr, fileData);
     console.log('Payload sent!');
-    await sprd.sendJumpToPayload(stackLr, loadAddr + 0x200, true);
+    await bootRom.sendJumpToPayload(stackLr, loadAddr + 0x200, true);
 
     await delay(1000)
 
-    console.log('fdl1 hello:', await sprd.sendHello());
+    console.log('fdl1 hello:', await bootRom.sendHello());
   }
 
   return (
