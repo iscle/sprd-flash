@@ -1,7 +1,7 @@
 'use client';
 
 import { ChangeEvent, useState } from "react";
-import SPRDDevice from "./lib/SPRDDevice";
+import SPRDDevice from "../lib/SPRDDevice";
 import { Button, Input } from "@mui/material";
 import Box from '@mui/material/Box';
 import FormLabel from '@mui/material/FormLabel';
@@ -63,7 +63,7 @@ export default function Home() {
   }
 
   function delay(ms: number) {
-      return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   const handleButtonClick = async () => {
@@ -73,7 +73,7 @@ export default function Home() {
     }
 
     const sprd = new SPRDDevice();
-        
+
     await sprd.open()
 
     const helloResponse = await sprd.sendHello();
@@ -145,7 +145,7 @@ export default function Home() {
               sx={{ ariaLabel: 'payload' }}
               onChange={handleFileChange} />
           </FormControl>
-          
+
           <Button
             fullWidth
             variant="contained"

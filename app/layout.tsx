@@ -5,7 +5,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from '../theme';
 import "./globals.css";
 import { CssBaseline } from "@mui/material";
-import ButtonAppBar from "./component/ButtonAppBar";
+import ButtonAppBar from "../component/ButtonAppBar";
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
