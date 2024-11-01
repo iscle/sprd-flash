@@ -18,6 +18,7 @@ export default class SPRDDevice {
   private alt = -1;
   private epIn = -1;
   private epOut = -1;
+  private transferInPromise?: Promise<USBInTransferResult>;
 
   constructor(family: SPRDFamily) {
     this.family = family;
@@ -44,12 +45,29 @@ export default class SPRDDevice {
     return true;
   }
 
-  async transferIn(length: number): Promise<Uint8Array> {
+  async transferIn(
+    length: number,
+    timeoutMs: number | undefined = undefined
+  ): Promise<Uint8Array> {
     if (!this.device) {
       throw Error("Device not open");
     }
 
-    const result = await this.device.transferIn(this.epIn, length);
+    if (!this.transferInPromise) {
+      this.transferInPromise = this.device.transferIn(this.epIn, length);
+    }
+
+    let result: USBInTransferResult;
+    if (timeoutMs) {
+      const timeoutPromise = new Promise<never>((resolve, reject) => {
+        setTimeout(() => reject("Timed out"), timeoutMs);
+      });
+      result = await Promise.race([this.transferInPromise, timeoutPromise]);
+    } else {
+      result = await this.transferInPromise;
+    }
+
+    this.transferInPromise = undefined;
 
     console.debug("Received data:", result);
 
