@@ -21,7 +21,7 @@ export default function ButtonAppBar() {
           <IconButton aria-label={`${drawerOpen ? 'close' : 'open'} menu drawer`} onClick={() => setDrawerOpen(true)}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" className="grow px-4">
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, paddingInline: 1 }}>
             sprd flash
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

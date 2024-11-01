@@ -95,7 +95,7 @@ export default function AppDrawer({ open, onClose }: Props) {
         </List>
         <Divider />
         <List>
-          <Typography variant="body2" color="textSecondary" className="px-4" fontWeight={500}>Advanced</Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ paddingInline: 1 }} fontWeight={500}>Advanced</Typography>
           {ADVANCED.map((navItem) => (
             <NavItem
               key={navItem.text}
