@@ -33,6 +33,12 @@ export default class ByteFIFO {
       this.buffer.copyWithin(0, length, this.tail);
       this.tail -= length;
     }
+
+    get(length: number): Uint8Array {
+        const data = this.peek(length);
+        this.consume(length);
+        return data;
+    }
   
     // Get the number of bytes available for reading
     get available(): number {
