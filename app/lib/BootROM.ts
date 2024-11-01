@@ -143,11 +143,11 @@ export default class BootROM {
         do {
             if (this.inFifo.available === 0) {
                 try {
-                    const data = await this.device.transferIn(this.inFifo.free)
+                    const data = await this.device.transferIn(this.inFifo.free, 1000)
                     this.inFifo.append(data)
                 } catch (error) {
-                    console.warn('Failed to receive data:', error)
-                    continue
+                    // TODO: Maybe retry?
+                    throw Error('Failed to receive data')
                 }
             }
 

@@ -10,6 +10,8 @@ import FormControl from '@mui/material/FormControl';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
+import { readFile } from "./lib/util";
+import Socrates from "./lib/Socrates";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -73,9 +75,11 @@ export default function Home() {
       return
     }
 
+    /* Open a SHARKL5PRO device */
     const sprd = new SPRDDevice(SPRDFamily.SHARKL5PRO);
     await sprd.open()
 
+    /* Load the payload using the BootROM */
     const bootRom = new BootROM(sprd);
 
     const helloResponse = await bootRom.sendHello();
@@ -87,38 +91,17 @@ export default function Home() {
 
     console.log('Device ready!')
 
-    const loadAddr = 0x5500
-
-    const readFileAsUint8Array = (file: File): Promise<Uint8Array> => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          if (reader.result) {
-            const arrayBuffer = reader.result as ArrayBuffer;
-            const uint8Array = new Uint8Array(arrayBuffer);
-            resolve(uint8Array);
-          } else {
-            reject(new Error("File reading failed"));
-          }
-        };
-        reader.onerror = () => {
-          reject(new Error("File reading error"));
-        };
-        reader.readAsArrayBuffer(file);
-      });
-    };
-
-    const fileData = await readFileAsUint8Array(selectedFile);
+    const loadAddr = 0x5500;
+    const fileData = await readFile(selectedFile);
 
     console.log(`Sending payload to ${loadAddr.toString(16)}... (${fileData.length} bytes)`);
-
     await bootRom.sendPayload(loadAddr, fileData);
-    console.log('Payload sent!');
+    console.log('Jumping to payload...');
     await bootRom.sendJumpToPayload(loadAddr + 0x200);
 
-    await delay(1000)
+    const socrates = new Socrates(sprd);
 
-    console.log('fdl1 hello:', await bootRom.sendHello());
+    
   }
 
   return (
