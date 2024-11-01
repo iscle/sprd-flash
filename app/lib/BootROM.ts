@@ -1,4 +1,4 @@
-import ByteFIFO from "./ByteFiFO"
+import ByteFIFO from "./ByteFIFO"
 import SPRDDevice, { SPRDFamily } from "./SPRDDevice"
 
 const HDLC_FLAG = 0x7e
