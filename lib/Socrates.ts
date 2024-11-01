@@ -1,3 +1,1 @@
-export default class Socrates {
-    
-}
+export default class Socrates {}
