@@ -1,8 +1,8 @@
 'use client';
 
-import BootROM from "./lib/BootROM";
+import BootROM from "@/lib/BootROM";
 import { ChangeEvent, useState } from "react";
-import SPRDDevice, { SPRDFamily } from "./lib/SPRDDevice";
+import SPRDDevice, { SPRDFamily } from "@/lib/SPRDDevice";
 import { Button, Input } from "@mui/material";
 import Box from '@mui/material/Box';
 import FormLabel from '@mui/material/FormLabel';
@@ -10,8 +10,8 @@ import FormControl from '@mui/material/FormControl';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import { readFile } from "./lib/util";
-import Socrates from "./lib/Socrates";
+import { readFile } from "@/lib/util";
+import Socrates from "@/lib/Socrates";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -66,7 +66,7 @@ export default function Home() {
   }
 
   function delay(ms: number) {
-      return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   const handleButtonClick = async () => {
@@ -77,6 +77,7 @@ export default function Home() {
 
     /* Open a SHARKL5PRO device */
     const sprd = new SPRDDevice(SPRDFamily.SHARKL5PRO);
+
     await sprd.open()
 
     /* Load the payload using the BootROM */
@@ -101,7 +102,7 @@ export default function Home() {
 
     const socrates = new Socrates(sprd);
 
-    
+
   }
 
   return (
@@ -129,7 +130,7 @@ export default function Home() {
               sx={{ ariaLabel: 'payload' }}
               onChange={handleFileChange} />
           </FormControl>
-          
+
           <Button
             fullWidth
             variant="contained"
