@@ -16,10 +16,15 @@ export default function UiSandbox() {
       <div className="p-4">
         <Typography variant="h5" component="div">Succeeds after 5s</Typography>
 
-        <GuidedDownload onWaitForDevice={async () => {
-          await timeout(5000);
-          return true;
-        }} />
+        <GuidedDownload
+          successContent={
+            <Typography variant="body1">Connect to device succeeded! Typically, we would have a button or something here to proceed.</Typography>
+          }
+          onWaitForDevice={async () => {
+            await timeout(5000);
+            return true;
+          }}
+        />
       </div>
 
       <Divider />
@@ -31,6 +36,18 @@ export default function UiSandbox() {
           await timeout(5000);
           return false;
         }} />
+      </div>
+
+      <Divider />
+
+      <div className="p-4">
+        <Typography variant="h5" component="div">Disabled</Typography>
+        <Typography variant="caption" component="div">Maybe some prerequisites haven't been met yet</Typography>
+
+        <GuidedDownload
+          disabled
+          onWaitForDevice={async () => false}
+        />
       </div>
     </div>
   )

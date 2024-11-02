@@ -5,8 +5,11 @@ import Step from '@mui/material/Step';
 import StepLabel, { StepLabelProps } from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
 import { Button, CircularProgress, StepContent } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 type Props = {
+  disabled?: boolean
+  successContent?: React.ReactNode
   onWaitForDevice: () => Promise<boolean>
 }
 
@@ -27,7 +30,7 @@ const DOWNLOAD_STEPS = [
 ]
 
 
-export default function GuidedDownload({ onWaitForDevice }: Props) {
+export default function GuidedDownload({ disabled, successContent, onWaitForDevice }: Props) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [status, setStatus] = React.useState<GuidedStatus>('pending');
 
@@ -57,7 +60,7 @@ export default function GuidedDownload({ onWaitForDevice }: Props) {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Stepper activeStep={activeStep} orientation="vertical">
+      <Stepper activeStep={activeStep} orientation="vertical" sx={disabled ? { opacity: 0.5 } : undefined}>
         {DOWNLOAD_STEPS.map((step, index) => {
           const stepProps: { completed?: boolean } = {};
           const labelProps: StepLabelProps = {};
@@ -80,8 +83,8 @@ export default function GuidedDownload({ onWaitForDevice }: Props) {
               <StepLabel {...labelProps}>{step.text}</StepLabel>
               <StepContent>
                 {!step.waitForDevice ?
-                  <Button variant="contained" onClick={nextStep}>
-                    Done
+                  <Button variant="contained" disabled={disabled} onClick={nextStep}>
+                    Next
                   </Button>
                   : undefined
                 }
@@ -90,7 +93,7 @@ export default function GuidedDownload({ onWaitForDevice }: Props) {
                     We were unable to connect to your device.
 
                     <p>
-                      <Button variant="contained" onClick={resetSteps}>
+                      <Button variant="contained" startIcon={<RefreshIcon />} disabled={disabled} onClick={resetSteps}>
                         Retry
                       </Button>
                     </p>
@@ -101,8 +104,8 @@ export default function GuidedDownload({ onWaitForDevice }: Props) {
           );
         })}
       </Stepper>
-      {activeStep === DOWNLOAD_STEPS.length ? (
-        <div>Connect succeeded, we can do stuff now</div>
+      {activeStep === DOWNLOAD_STEPS.length && !!successContent ? (
+        successContent
       ) : undefined}
     </Box>
   );
