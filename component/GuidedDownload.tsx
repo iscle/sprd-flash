@@ -4,7 +4,7 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel, { StepLabelProps } from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
-import { Button, CircularProgress, StepContent } from '@mui/material';
+import { Button, CircularProgress, Link, StepContent } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 type Props = {
@@ -18,6 +18,7 @@ type GuidedStatus = 'pending' | 'success' | 'failed'
 const DOWNLOAD_STEPS = [
   {
     text: 'Shut down the device',
+    skipText: 'I\'m already in download mode'
   },
   {
     text: 'Hold the Download Mode Button',
@@ -33,9 +34,15 @@ const DOWNLOAD_STEPS = [
 export default function GuidedDownload({ disabled, successContent, onWaitForDevice }: Props) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [status, setStatus] = React.useState<GuidedStatus>('pending');
+  const allowSkip = activeStep === 0 && !disabled;
 
   const nextStep = () => {
     setActiveStep(activeStep + 1);
+  }
+
+  const skipToWaitStep = () => {
+    const waitStep = DOWNLOAD_STEPS.findIndex((item) => item.waitForDevice);
+    setActiveStep(waitStep);
   }
 
   const resetSteps = () => {
@@ -65,7 +72,13 @@ export default function GuidedDownload({ disabled, successContent, onWaitForDevi
           const stepProps: { completed?: boolean } = {};
           const labelProps: StepLabelProps = {};
 
-          if (step.helperText) {
+          if (step.skipText && allowSkip) {
+            labelProps.optional = (
+              <Link variant="body2" component="button" onClick={skipToWaitStep}>
+                {step.skipText}
+              </Link>
+            )
+          } else if (step.helperText && index === activeStep) {
             labelProps.optional = (
               <Typography variant="caption">{step.helperText}</Typography>
             );
