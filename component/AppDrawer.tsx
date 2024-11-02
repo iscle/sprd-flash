@@ -62,6 +62,11 @@ const ADVANCED = [
     text: 'Custom Payload',
     icon: WarningIcon,
     href: '/custom-payload'
+  },
+  {
+    text: '(Temp) UI Sandbox',
+    icon: WarningIcon,
+    href: '/ui-sandbox'
   }
 ] as NavItemProps[]
 
