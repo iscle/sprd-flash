@@ -65,10 +65,6 @@ export default function CustomPayload() {
     }
   }
 
-  function delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   const handleButtonClick = async () => {
     if (!selectedFile) {
       alert('Please select a file first')
