@@ -55,7 +55,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function Home() {
+export default function CustomPayload() {
   const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
