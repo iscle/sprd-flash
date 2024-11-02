@@ -130,6 +130,7 @@ export default function CustomPayload() {
           <Button
             fullWidth
             variant="contained"
+            disabled={!selectedFile}
             onClick={handleButtonClick}
           >
             Run!
