@@ -150,7 +150,7 @@ export default class BootROM {
           this.inFifo.append(data);
         } catch (error) {
           // TODO: Maybe retry?
-          throw Error("Failed to receive data");
+          throw error;
         }
       }
 
