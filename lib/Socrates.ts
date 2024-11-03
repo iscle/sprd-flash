@@ -100,7 +100,7 @@ export default class Socrates {
     const view = new DataView(array.buffer);
 
     view.setBigUint64(0, address);
-    array[8] = value;
+    view.setUint8(8, value);
 
     await this.sendPacket(new Packet(CMD.REQ_WRITE_8, array));
     await this.receiveAck();
