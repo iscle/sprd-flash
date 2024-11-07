@@ -5,22 +5,17 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import AppDrawer from './AppDrawer';
 
 import { GitHub } from '@mui/icons-material';
+import { usePathname } from 'next/navigation';
 
 export default function ButtonAppBar() {
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const currentPath = usePathname();
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <AppBar position="static">
         <Toolbar>
-          <IconButton aria-label={`${drawerOpen ? 'close' : 'open'} menu drawer`} onClick={() => setDrawerOpen(true)}>
-            <MenuIcon />
-          </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, paddingInline: 1 }}>
             sprd flash
           </Typography>
