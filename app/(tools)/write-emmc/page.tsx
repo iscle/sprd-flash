@@ -1,4 +1,9 @@
 'use client'
+
+import { BaseTool } from "@/component/BaseTool"
+
 export default function WriteEmmc() {
-  return <div>Sample Route, to be populated later.</div>
+  return <BaseTool title="Write EMMC">
+    <div>Sample Route, to be populated later.</div>
+  </BaseTool>
 }
