@@ -78,17 +78,8 @@ export default function CustomPayload() {
 
     /* Load the payload using the BootROM */
     const bootRom = new BootROM(sprd);
-    const socrates = new Socrates(sprd);
 
-    try {
-      const version = socrates.version();
-      console.log('Version:', version);
-
-      return
-    } catch (e) {
-      void (e)
-      console.log('Not in Socrates mode');
-    }
+    await sprd.controlTransferOut();
 
     const helloResponse = await bootRom.sendHello();
     console.log('Hello response:', helloResponse)

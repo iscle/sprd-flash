@@ -44,6 +44,22 @@ export default class SPRDDevice {
     return true;
   }
 
+  //libusb_control_transfer(io->dev_handle, 0x21, 34, 0x601, 0, NULL, 0, io->timeout);
+  async controlTransferOut() {
+    if (!this.device) {
+      throw Error("Device not open");
+    }
+
+    await this.device.controlTransferOut({
+      requestType: "class",
+      recipient: "interface",
+      request: 34,
+      value: 0x601,
+      index: 0,
+    });
+  }
+
+
   async transferIn(length: number): Promise<Uint8Array> {
     if (!this.device) {
       throw Error("Device not open");
