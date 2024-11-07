@@ -17,9 +17,6 @@ export default function ButtonAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          {currentPath !== '/' ? <IconButton aria-label={'Go home'} href='/'>
-            <ArrowBackIcon />
-          </IconButton> : undefined}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, paddingInline: 1 }}>
             sprd flash
           </Typography>
