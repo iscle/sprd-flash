@@ -22,6 +22,7 @@ export default function HomeCard({ text, href, description, icon: Icon }: Props)
       <Box sx={{
         minWidth: 200,
         transition: 'all 150ms ease-in-out',
+        borderRadius: 1,
         '&:hover': {
           boxShadow: '0 0 0.75rem 0px var(--mui-palette-primary-main)',
           scale: 1.03
