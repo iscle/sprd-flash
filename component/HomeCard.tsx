@@ -21,8 +21,9 @@ export default function HomeCard({ text, href, description, icon: Icon }: Props)
     <Link href={href} aria-label={text}>
       <Box sx={{
         minWidth: 200,
-        transition: 'scale 150ms ease-in-out',
+        transition: 'all 150ms ease-in-out',
         '&:hover': {
+          boxShadow: '0 0 0.75rem 0px var(--mui-palette-primary-main)',
           scale: 1.03
         }
       }}>
