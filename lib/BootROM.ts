@@ -146,7 +146,7 @@ export default class BootROM {
     do {
       if (this.inFifo.available === 0) {
         try {
-          const data = await this.device.transferIn(this.inFifo.free, 1000);
+          const data = await this.device.transferIn(this.inFifo.free);
           this.inFifo.append(data);
         } catch (error) {
           // TODO: Maybe retry?
