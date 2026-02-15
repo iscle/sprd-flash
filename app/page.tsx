@@ -4,7 +4,7 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import WarningIcon from '@mui/icons-material/Warning';
-import { Divider, Grid2 as Grid, Typography } from '@mui/material';
+import { Divider, Grid, Typography } from '@mui/material';
 import HomeCard from '@/component/HomeCard';
 import { BaseScreen } from '@/component/BaseScreen';
 
